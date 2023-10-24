@@ -1,21 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace tmps_lab1.Classes
 {
+
+    public abstract class Account
+    {
+        public abstract void generate_Acc_num();
+    }
+
+
+    public interface ICloanable
+    {
+        object Clone();
+    }
+
     public interface IBankAccount
     {
         void Activate_Account();
-        object Create_Account(string Owner, double balance);
+        BankAccount Create_Account(string Owner, double balance,string type);
+        object CheckStatus();
     }
 
     public interface ICredit_Account: IBankAccount 
     {
-
+        void add_intrest();
     }
+
+
+    public interface IGift : IBankAccount
+    {
+        void add_discount(Transaction transaction);
+    }
+
+    
+
+
+
+
 
     public interface IPayment
     {
@@ -27,7 +53,7 @@ namespace tmps_lab1.Classes
 
     public interface ILoan : IPayment
     {
-        object LoanSettlement(int amount, double rate_per_month, double intrest);
+        Loan LoanSettlement(int amount, double rate_per_month, double intrest);
 
         void initializeRepayment(BankAccount bankacconunt);
     }
