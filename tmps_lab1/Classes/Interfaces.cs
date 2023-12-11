@@ -14,9 +14,9 @@ namespace tmps_lab1.Classes
     }
 
 
-    public interface ICloanable
+    public interface ICloanable<T>
     {
-        object Clone();
+        T Clone();
     }
 
     public interface IBankAccount

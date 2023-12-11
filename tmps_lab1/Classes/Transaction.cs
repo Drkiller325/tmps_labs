@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace tmps_lab1.Classes
 {
-    public class Transaction : ICloanable
+    public class Transaction : ICloanable<Transaction>
     {
         public double Balance { get; set; }
         public double amount { get; set; }
@@ -21,7 +21,7 @@ namespace tmps_lab1.Classes
             this.ID = ID;
         }
 
-        public object Clone()
+        public Transaction Clone()
         {
             return new Transaction(Balance,amount,Status,ID);
         }
@@ -30,4 +30,45 @@ namespace tmps_lab1.Classes
         
 
     }
+
+    public class Commision
+    {
+        public void apply_commision(Transaction t)
+        {
+            t.amount = t.amount + t.amount * 0.02;
+            Console.WriteLine("commision applied");
+        }
+    }
+
+    public class PayFees
+    {
+        public void apply_fee(Transaction t)
+        {
+            t.amount += 2;
+            Console.WriteLine("Fees paid");
+        }
+    }
+
+    public class Pay_in_store
+    {
+        private Transaction t;
+        private Commision commision;
+        private PayFees fee;
+
+        public Pay_in_store(Transaction t)
+        {
+            this.t = t;
+            commision = new Commision();
+            fee = new PayFees();
+
+        }
+
+        public void Pay(Transaction t)
+        {
+            commision.apply_commision(t);
+            fee.apply_fee(t);
+            Console.WriteLine("Payment Done!");
+        }
+    }
+
 }

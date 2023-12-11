@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace tmps_lab1.Classes
+﻿namespace tmps_lab1.Classes
 {
     public class Payment : IPayment
     {
         private List<Transaction> payments = new List<Transaction>();
 
-     
+
         Payment(double Balance, double Ammount)
         {
             double diff = Balance - Ammount;
             double rest = -1 * Ammount;
-            Transaction transaction = new Transaction(diff, rest, "Done!",payments.Count);
+            Transaction transaction = new Transaction(diff, rest, "Done!", payments.Count);
             payments.Add(transaction);
         }
         public List<Transaction> getPayments()
@@ -33,7 +27,7 @@ namespace tmps_lab1.Classes
     public class Loan : ILoan
     {
         private List<Transaction> payments = new List<Transaction>();
-        private List<Loan> loans= new List<Loan>();
+        private List<Loan> loans = new List<Loan>();
 
         public int amount;
         public double rate_per_month;
@@ -59,7 +53,7 @@ namespace tmps_lab1.Classes
 
         public Loan LoanSettlement(int amount, double rate_per_month, double intrest)
         {
-            Loan loan = new Loan(amount,rate_per_month,intrest);
+            Loan loan = new Loan(amount, rate_per_month, intrest);
             loans.Add(loan);
             return loan;
         }
@@ -67,7 +61,7 @@ namespace tmps_lab1.Classes
         public void initializeRepayment(BankAccount bankacconunt)
         {
             bankacconunt.balance = bankacconunt.balance - rate_per_month;
-            Transaction transaction = new Transaction(bankacconunt.balance, rate_per_month, "Loan Payment Done!",payments.Count);
+            Transaction transaction = new Transaction(bankacconunt.balance, rate_per_month, "Loan Payment Done!", payments.Count);
             payments.Add(transaction);
 
         }
@@ -84,5 +78,59 @@ namespace tmps_lab1.Classes
                 }
             }
         }
+
     }
+    public interface IHandler
+    {
+        IHandler NextHandler { get; set; }
+        void HandlePayment(double amout);
+    }
+
+    public class Handler1 : IHandler
+    {
+        public IHandler NextHandler { get; set; }
+
+        public void HandlePayment(double amout)
+        {
+            if (amout <= 100)
+            {
+                Console.WriteLine("Payment proccessed");
+            }
+            else if (NextHandler != null)
+            {
+                Console.WriteLine("Amount exceeded the limit, passing to PIN management");
+                NextHandler.HandlePayment(amout);
+            }
+            else
+            {
+                Console.WriteLine("end of chain, payment not processed");
+            }
+        }
+        
+
+    }
+    public class Handler2 : IHandler
+    {
+        public IHandler NextHandler { get; set; }
+
+        public void HandlePayment(double amout)
+        {
+            if (amout > 100 && amout <= 2000)
+            {
+                Console.WriteLine("Requesting PIN....");
+                Console.WriteLine("Payment processed");
+            }
+            else if (NextHandler != null)
+            {
+                Console.WriteLine("Payment amount too big, passing to call verification");
+                NextHandler.HandlePayment((double)amout);
+            }
+            else
+            {
+                Console.WriteLine("end of chain, payment not processed");
+            }
+
+        }
+    }
+
 }
